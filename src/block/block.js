@@ -79,7 +79,7 @@ registerBlockType( 'cgb/block-gutenberg-simple-statistics', {
 			</div>
 		);
 
-		const editStat = (stat, i) => {
+		const deleteStat = (stat, i) => {
 
 			return (
 				<div className="stat-edit-box">
@@ -145,7 +145,7 @@ registerBlockType( 'cgb/block-gutenberg-simple-statistics', {
 									<div>
 										{ !focus ? <div className="label" id={"countup-"+attributes.randomKey+i}>{stat.label}</div> : renderPlainText('label') }
 									</div>
-									{ focus ? editStat(stat, i) : null }
+									{ focus ? deleteStat(stat, i) : null }
 								</div>
 							), <div style={{display: 'none'}}>{!focus ? setTimeout( () => { renderCountUp()  }, 100) : null }</div> ]
 						})
