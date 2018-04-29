@@ -1,8 +1,8 @@
 /**
  * BLOCK: gutenberg-simple-statistics
  *
- * Registering a basic block with Gutenberg.
- * Simple block, renders and saves the same content without any interactivity.
+ * A block that allows you to add statistics that count up
+ * 
  */
 
 //  Import CSS.
