@@ -11,7 +11,7 @@ import './editor.scss';
 
 const { __ } = wp.i18n; // Import __() from wp.i18n
 const { registerBlockType } = wp.blocks; // Import registerBlockType() from wp.blocks
-const PlainText = wp.blocks.PlainText;
+const PlainText = wp.blocks.PlainText; // Import the PlainText input
 
 /**
  * Register: aa Gutenberg Block.
@@ -34,13 +34,13 @@ registerBlockType( 'cgb/block-gutenberg-simple-statistics', {
 	keywords: [
 		__( 'Statistics' ),
 	],
-	attributes: {
+	attributes: { // set up our default attributes
 		stats: {
-			type: "array",
+			type: "array", // arrays don't take sub attributes
 			default: [],
 		},
 		randomKey: {
-			type: 'string',
+			type: 'string', // set up our random key so we can have unique ids for the count up animation
 			default: 'statistics-block'
 		},
 	},
@@ -55,14 +55,13 @@ registerBlockType( 'cgb/block-gutenberg-simple-statistics', {
 	 */
 	edit: function({ attributes, setAttributes, focus, setFocus, isSelected, className }) {
 
-		// set our random key so we can have unique ids on the front end
+		// if our random key is the default, set our random key so we can have unique ids on the front end
 		if(attributes.randomKey === 'statistics-block') {
 			const randomKey = Math.floor(Math.random() * 9999);
 			setAttributes({randomKey: randomKey});
 		}
 
-
-		// create a component to add new rows
+		// Creates a component to add new stats. This has a button with an onclick to add a new stat with default values and uses setAttributes to save the new list of stats
 		const addRow = (
 			<div style={{textAlign: 'right'}}>
 				<button type="button" style={{marginLeft: "10px", marginRight: "10px"}} className="components-button components-icon-button" 
@@ -79,7 +78,8 @@ registerBlockType( 'cgb/block-gutenberg-simple-statistics', {
 			</div>
 		);
 
-		const deleteStat = (stat, i) => {
+		// Creates a component to delete stats. This has a button with an onclick that slices the array on the index and uses the setAttribute function to save the new list of stats.
+		const deleteStat = (index) => {
 
 			return (
 				<div className="stat-edit-box">
@@ -88,7 +88,7 @@ registerBlockType( 'cgb/block-gutenberg-simple-statistics', {
 						<button type="button" style={{paddingLeft: "2px", paddingRight: "2px"}} className="components-button components-icon-button"
 							onClick={ () => {
 								let newStats = [ ...attributes.stats ]
-								newStats.splice(i, 1)
+								newStats.splice(index, 1)
 								setAttributes( { stats: newStats } )
 								}
 							}><span className="dashicons dashicons-trash"></span>
@@ -98,56 +98,63 @@ registerBlockType( 'cgb/block-gutenberg-simple-statistics', {
 			)
 		}
 
+		// this is just a simple helper for rendering plain text inputs
+		// it takes a field and an index so we can update the correct stat
+		const renderPlainText = (field, stat, index) => {
+			return (
+				<PlainText
+					style={{textAlign: "center", minWidth: '50px'}}
+					value={stat[field]}
+					className={field}
+					onChange={ (value) => {
+						let newStats = [ ...attributes.stats ]
+						newStats[index][field] = value
+						setAttributes( { stats: newStats } )
+					}}
+					placeholder={field === 'label' ? __( "Label" ) :  __( "0" ) }
+				/>
+			)
+		}
+
+		// method to start the count up
+		const renderCountUp = (stat, index) => {
+			// set our options
+			const countUpOptions = {
+			  useEasing: true,
+			  useGrouping: true,
+			}
+			// get our unique id
+			const id = 'countup-'+attributes.randomKey+index
+			// build the count up
+			const countUp = new CountUp( id, 0, stat.value, 0, 2.5, countUpOptions);
+			// if we correctly built the count up, start the animation
+			if (!countUp.error) {
+				countUp.start();
+			} else {
+				console.error(countUp.error);
+			}
+		}
+
 		return (
 			<div className={ className }>
 				<div className='container'>
 					{
-						attributes.stats.map((stat, i) => {
-
-							const renderPlainText = (field) => {
-								return (
-									<PlainText
-										style={{textAlign: "center", minWidth: '50px'}}
-										value={stat[field]}
-										className={field}
-										onChange={ (value) => {
-											let newStats = [ ...attributes.stats ]
-											newStats[i][field] = value
-											setAttributes( { stats: newStats } )
-										}}
-										placeholder={field === 'label' ? __( "Label" ) :  __( "0" ) }
-									/>
-								)
-							}
-
-							let renderCountUp = () => {
-								let countUpOptions = {
-								  useEasing: true,
-								  useGrouping: true,
-								}
-
-								let id = 'countup-'+attributes.randomKey+i
-
-								let countUp = new CountUp( id, 0, stat.value, 0, 2.5, countUpOptions);
-
-								if (!countUp.error) {
-								countUp.start();
-								} else {
-								  console.error(countUp.error);
-								}
-							}
-
+						// map through our stats and render them, if we are in focus (user has selected the block), show our inputs, otherwise, show our html
+						attributes.stats.map((stat, index) => {
+							// return an array with our html and a hidden div that starts the animation if we aren't focused
 							return [ (
-								<div className="statistic" key={i}>
-									<div>
-										{ !focus ? <div className="value" id={"countup-"+attributes.randomKey+i}>{stat.value}</div> : renderPlainText('value') }
+									<div className="statistic" key={index}>
+										<div>
+											{ focus ? renderPlainText('value', stat, index) : <div className="value" id={"countup-"+attributes.randomKey+index}>{stat.value}</div> }
+										</div>
+										<div>
+											{ focus ? renderPlainText('label', stat, index) : <div className="label" id={"countup-"+attributes.randomKey+index}>{stat.label}</div> }
+										</div>
+										{ focus ? deleteStat(index) : null }
 									</div>
-									<div>
-										{ !focus ? <div className="label" id={"countup-"+attributes.randomKey+i}>{stat.label}</div> : renderPlainText('label') }
-									</div>
-									{ focus ? deleteStat(stat, i) : null }
-								</div>
-							), <div style={{display: 'none'}}>{!focus ? setTimeout( () => { renderCountUp()  }, 100) : null }</div> ]
+								), 
+								<div style={{display: 'none'}}>{!focus ? setTimeout( () => { renderCountUp(stat, index)  }, 100) : null }</div> 
+							]
 						})
 					}
 				</div>
@@ -170,11 +177,12 @@ registerBlockType( 'cgb/block-gutenberg-simple-statistics', {
 			<div className={ className }>
 				<div className='container'>
 					{
+						// map through our stats and show the html
 						attributes.stats.map((stat, i) => {
 							return (
 								<div className="statistic" key={i}>
 									<div>
-										<div className="simple-statistic-countup" data-value={stat.value} data-key={attributes.randomKey}></div>
+										<div className="simple-statistic-countup" data-value={stat.value} id={'countup-'+attributes.randomKey+i}>0</div>
 									</div>
 									<div className="label">
 										{stat.label}

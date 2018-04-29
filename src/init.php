@@ -28,17 +28,19 @@ function gutenberg_simple_statistics_cgb_block_assets() {
 		array( 'wp-blocks' ) // Dependency to include the CSS after it.
 		// filemtime( plugin_dir_path( __FILE__ ) . 'editor.css' ) // Version: filemtime — Gets file modification time.
 	);
-
+	// this is our count up library
 	wp_enqueue_script(
 		'gutenberg_statistic-block-countup-js',
 		plugins_url( '/countup.min.js', dirname( __FILE__ ) ),
 		array( 'wp-blocks', 'wp-i18n', 'wp-element' )
 	);
+	// this is a library to let us know when the element appears in the browser's view
 	wp_enqueue_script(
 		'gutenberg_statistic-block-appear-js',
 		plugins_url( '/appear.js', dirname( __FILE__ ) ),
 		array( 'jquery' )
 	);
+	// this is our script to parse and start the count ups
 	wp_enqueue_script(
 		'gutenberg_statistic-block-ready-countup-js',
 		plugins_url( '/ready-countup.js', dirname( __FILE__ ) ),
