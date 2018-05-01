@@ -1,14 +1,17 @@
 jQuery( document ).ready(function() {
+  // set up our appear listeners
   jQuery('.simple-statistic-countup').appear();
+  // if the element is already in the view, trigger the appear event
   jQuery(document).ready(function() {
     jQuery.force_appear();
   });
 
-  jQuery(document.body).on('appear', '.simple-statistic-countup', function(e, $affected) {
+  jQuery(document.body).on('appear', '.simple-statistic-countup', function() {
     // this code is executed for each appeared element
     var value =  parseInt(jQuery(this).data("value"));
-    var id = jQuery(this).attr('id')
-    renderCountUp(value, id)
+    var id = jQuery(this).attr('id');
+    renderCountUp(value, id);
+    // change the class so the animation only happens once
     jQuery(this).attr('class', 'simple-statistic-countup-counted')
   })
 

@@ -141,20 +141,20 @@ registerBlockType( 'cgb/block-gutenberg-simple-statistics', {
 					{
 						// map through our stats and render them, if we are in focus (user has selected the block), show our inputs, otherwise, show our html
 						attributes.stats.map((stat, index) => {
+							// if we aren't in focus, set a render count up on a setTimeout so we ensure the statistic has already rendered on the page
+							!focus ? setTimeout( () => { renderCountUp(stat, index)  }, 100) : null;
 							// return an array with our html and a hidden div that starts the animation if we aren't focused
-							return [ (
-									<div className="statistic" key={index}>
-										<div>
-											{ focus ? renderPlainText('value', stat, index) : <div className="value" id={"countup-"+attributes.randomKey+index}>{stat.value}</div> }
-										</div>
-										<div>
-											{ focus ? renderPlainText('label', stat, index) : <div className="label" id={"countup-"+attributes.randomKey+index}>{stat.label}</div> }
-										</div>
-										{ focus ? deleteStat(index) : null }
+							return (
+								<div className="statistic" key={index}>
+									<div>
+										{ focus ? renderPlainText('value', stat, index) : <div className="value" id={"countup-"+attributes.randomKey+index}>{stat.value}</div> }
 									</div>
-								), 
-								<div style={{display: 'none'}}>{!focus ? setTimeout( () => { renderCountUp(stat, index)  }, 100) : null }</div> 
-							]
+									<div>
+										{ focus ? renderPlainText('label', stat, index) : <div className="label" id={"countup-"+attributes.randomKey+index}>{stat.label}</div> }
+									</div>
+									{ focus ? deleteStat(index) : null }
+								</div>
+							)
 						})
 					}
 				</div>
