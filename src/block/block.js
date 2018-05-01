@@ -147,10 +147,20 @@ registerBlockType( 'cgb/block-gutenberg-simple-statistics', {
 							return (
 								<div className="statistic" key={index}>
 									<div>
-										{ focus ? renderPlainText('value', stat, index) : <div className="value" id={"countup-"+attributes.randomKey+index}>{stat.value}</div> }
+										{ focus 
+											? 
+												renderPlainText('value', stat, index) 
+											: 
+												<div className="value" id={"countup-"+attributes.randomKey+index}>{stat.value}</div> 
+										}
 									</div>
 									<div>
-										{ focus ? renderPlainText('label', stat, index) : <div className="label" id={"countup-"+attributes.randomKey+index}>{stat.label}</div> }
+										{ focus 
+											? 
+												renderPlainText('label', stat, index) 
+											: 
+												<div className="label" id={"countup-"+attributes.randomKey+index}>{stat.label}</div> 
+										}
 									</div>
 									{ focus ? deleteStat(index) : null }
 								</div>
