@@ -143,7 +143,7 @@ registerBlockType( 'cgb/block-gutenberg-simple-statistics', {
 						attributes.stats.map((stat, index) => {
 							// if we aren't in focus, set a render count up on a setTimeout so we ensure the statistic has already rendered on the page
 							!focus ? setTimeout( () => { renderCountUp(stat, index)  }, 100) : null;
-							// return an array with our html and a hidden div that starts the animation if we aren't focused
+							// return an array with our html
 							return (
 								<div className="statistic" key={index}>
 									<div>
