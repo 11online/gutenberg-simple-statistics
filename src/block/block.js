@@ -53,7 +53,7 @@ registerBlockType( 'cgb/block-gutenberg-simple-statistics', {
 	 *
 	 * @link https://wordpress.org/gutenberg/handbook/block-api/block-edit-save/
 	 */
-	edit: function({ attributes, setAttributes, focus, setFocus, isSelected, className }) {
+	edit: function({ attributes, setAttributes, isSelected, className }) {
 
 		// if our random key is the default, set our random key so we can have unique ids on the front end
 		if(attributes.randomKey === 'statistics-block') {
@@ -139,15 +139,15 @@ registerBlockType( 'cgb/block-gutenberg-simple-statistics', {
 			<div className={ className }>
 				<div className='container'>
 					{
-						// map through our stats and render them, if we are in focus (user has selected the block), show our inputs, otherwise, show our html
+						// map through our stats and render them, if we are in isSelected (user has selected the block), show our inputs, otherwise, show our html
 						attributes.stats.map((stat, index) => {
-							// if we aren't in focus, set a render count up on a setTimeout so we ensure the statistic has already rendered on the page
-							!focus ? setTimeout( () => { renderCountUp(stat, index)  }, 100) : null;
+							// if we aren't in isSelected, set a render count up on a setTimeout so we ensure the statistic has already rendered on the page
+							!isSelected ? setTimeout( () => { renderCountUp(stat, index)  }, 100) : null;
 							// return an array with our html
 							return (
 								<div className="statistic" key={index}>
 									<div>
-										{ focus 
+										{ isSelected 
 											? 
 												renderPlainText('value', stat, index) 
 											: 
@@ -155,20 +155,20 @@ registerBlockType( 'cgb/block-gutenberg-simple-statistics', {
 										}
 									</div>
 									<div>
-										{ focus 
+										{ isSelected 
 											? 
 												renderPlainText('label', stat, index) 
 											: 
 												<div className="label" id={"countup-"+attributes.randomKey+index}>{stat.label}</div> 
 										}
 									</div>
-									{ focus ? deleteStat(index) : null }
+									{ isSelected ? deleteStat(index) : null }
 								</div>
 							)
 						})
 					}
 				</div>
-				{ focus ? addRow : null }
+				{ isSelected ? addRow : null }
 			</div>
 		)
 	},
