@@ -139,9 +139,9 @@ registerBlockType( 'cgb/block-gutenberg-simple-statistics', {
 			<div className={ className }>
 				<div className='container'>
 					{
-						// map through our stats and render them, if we are in isSelected (user has selected the block), show our inputs, otherwise, show our html
+						// map through our stats and render them, if isSelected (user has selected the block), show our inputs, otherwise, show our html
 						attributes.stats.map((stat, index) => {
-							// if we aren't in isSelected, set a render count up on a setTimeout so we ensure the statistic has already rendered on the page
+							// if not isSelected, set a render count up on a setTimeout so we ensure the statistic has already rendered on the page
 							!isSelected ? setTimeout( () => { renderCountUp(stat, index)  }, 100) : null;
 							// return an array with our html
 							return (
