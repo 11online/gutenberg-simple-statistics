@@ -42,7 +42,7 @@ function gutenberg_simple_statistics_cgb_block_assets() {
 	);
 	// this is our script to parse and start the count ups
 	wp_enqueue_script(
-		'gutenberg_statistic-block-ready-countup-js',
+		'gutenberg_simple_statistic-block-ready-countup-js',
 		plugins_url( '/ready-countup.js', dirname( __FILE__ ) ),
 		array( 'gutenberg_statistic-block-countup-js', 'gutenberg_statistic-block-appear-js', 'jquery' )
 	);
