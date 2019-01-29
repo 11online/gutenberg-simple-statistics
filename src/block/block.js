@@ -66,13 +66,17 @@ registerBlockType( 'cgb/block-gutenberg-simple-statistics', {
 			<div style={{textAlign: 'right'}}>
 				<button type="button" style={{marginLeft: "10px", marginRight: "10px"}} className="components-button components-icon-button" 
 					onClick={() => {
-						const newStats = [...attributes.stats]
-						const newStat = {
-							value: "",
-							label: ""
+						if(attributes.stats.length > 3) {
+							setAttributes({stats: []});
+						} else {
+							const newStats = [...attributes.stats]
+							const newStat = {
+								value: "",
+								label: ""
+							}
+							newStats.push(newStat)
+							setAttributes({stats: newStats})
 						}
-						newStats.push(newStat)
-						setAttributes({stats: newStats})
 					}
 				}>{ __("Add Statistic:")}<span className="dashicons dashicons-plus"></span></button>
 			</div>
